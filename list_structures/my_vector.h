@@ -10,178 +10,178 @@ class MyVector
 private:
 
 
-	int size;
+    int size;
 
-	T* arrPtr;
-
-public:
-
-
-	MyVector();
-
-	//creating vector with const size and typename T
-	MyVector(const int);   
-
-	MyVector(const MyVector*);
-
-	~MyVector() { delete[] arrPtr; };
+    T* arrPtr;
 
 public:
 
 
-	//adding (element, point) in the vector
-	void add(const T, const int); 
+    MyVector();
 
-	//removing element from chosen point in the vector
-	void remove(const int);    
+    //creating vector with const size and typename T
+    MyVector(const int);   
 
-	//searching element in the vector
-	int search(const T);         
+    MyVector(const MyVector*);
 
-	//taking element from chosen point in the vector
-	T take(const int);          
-
-	//getting size of the vector
-	int getSize() { return this->size; };
-
-	//changing size of the vector
-	void setSize(const int);
-
-	T* getArrPtr() { return this->arrPtr; };
-
-	void setArrPtr(T*);
+    ~MyVector() { delete[] arrPtr; };
 
 public:
 
 
-	void input();
+    //adding (element, point) in the vector
+    void add(const T, const int); 
 
-	void output();
+    //removing element from chosen point in the vector
+    void remove(const int);    
+
+    //searching element in the vector
+    int search(const T);         
+
+    //taking element from chosen point in the vector
+    T take(const int);          
+
+    //getting size of the vector
+    int getSize() { return this->size; };
+
+    //changing size of the vector
+    void setSize(const int);
+
+    T* getArrPtr() { return this->arrPtr; };
+
+    void setArrPtr(T*);
+
+public:
+
+
+    void input();
+
+    void output();
 };
 
 //Definition code.
 template <class T>
 inline MyVector<T>::MyVector()
-	: size(1)
+    : size(1)
 {
-	this->arrPtr = new T[size];
-	this->arrPtr[0] = 0;
+    this->arrPtr = new T[size];
+    this->arrPtr[0] = 0;
 }
 ;
 
 template <class T>
 inline MyVector<T>::MyVector(const int n)
-	: size(n)
+    : size(n)
 {
-	this->arrPtr = new T[size];
-	for (int i = 0; i < n; i++)
-		this->arrPtr[i] = T();
+    this->arrPtr = new T[size];
+    for (int i = 0; i < n; i++)
+        this->arrPtr[i] = T();
 }
 ;
 
 template <class T>
 inline MyVector<T>::MyVector(const MyVector* other)
-	: size(other->size)
+    : size(other->size)
 {
-	this->arrPtr = other->arrPtr;
+    this->arrPtr = other->arrPtr;
 }
 ;
 
 template<class T>
 inline void MyVector<T>::setSize(int n)
 {
-	int oldSize = this->size;
-	this->size = n;
-	T* newNamePtr = new T[this->size];
+    int oldSize = this->size;
+    this->size = n;
+    T* newNamePtr = new T[this->size];
 
-	for (int i = 0; i < this->size; i++)
-		newNamePtr[i] = T();
+    for (int i = 0; i < this->size; i++)
+        newNamePtr[i] = T();
 
-	for (int i = 0; i < (oldSize >= this->size ? this->size : oldSize); i++)
-		newNamePtr[i] = this->arrPtr[i];
+    for (int i = 0; i < (oldSize >= this->size ? this->size : oldSize); i++)
+        newNamePtr[i] = this->arrPtr[i];
 
-	delete[] arrPtr;
-	this->arrPtr = newNamePtr;
+    delete[] arrPtr;
+    this->arrPtr = newNamePtr;
 }
 ;
 
 template<class T>
 inline void MyVector<T>::setArrPtr(T* newNamePtr)
 {
-	delete[] this->arrPtr;
-	this->arrPtr = newNamePtr;
+    delete[] this->arrPtr;
+    this->arrPtr = newNamePtr;
 }
 ;
 
 template<class T>
 void MyVector<T>::add(const T element, const int point)
 {
-	this->setSize(this->size + 1);
-	for (int i = point + 1; i < this->getSize(); i++)
-		this->arrPtr[i] = this->arrPtr[i - 1];
-	this->arrPtr[point] = element;
+    this->setSize(this->size + 1);
+    for (int i = point + 1; i < this->getSize(); i++)
+        this->arrPtr[i] = this->arrPtr[i - 1];
+    this->arrPtr[point] = element;
 }
 ;
 
 template<class T>
 void MyVector<T>::remove(const int point)
 {
-	for (int i = point; i < this->getSize(); i++)
-		this->arrPtr[i] = this->arrPtr[i + 1];
-	this->setSize(this->size - 1);
+    for (int i = point; i < this->getSize(); i++)
+        this->arrPtr[i] = this->arrPtr[i + 1];
+    this->setSize(this->size - 1);
 }
 ;
 
 template<class T>
 inline int MyVector<T>::search(const T element)
 {
-	int point = -1; //if you have this output, you have an issue
-	for (int i = 0; i < this->size; i++)
-		if (this->arrPtr[i] == element)
-			point = i;
-	return point;
+    int point = -1; //if you have this output, you have an issue
+    for (int i = 0; i < this->size; i++)
+        if (this->arrPtr[i] == element)
+            point = i;
+    return point;
 }
 ;
 
 template<class T>
 inline T MyVector<T>::take(const int point)
 {
-	return this->arrPtr[point];
+    return this->arrPtr[point];
 }
 ;
 
 template<class T>
 void MyVector<T>::input()
 {
-	std::cout << std::endl;
+    std::cout << std::endl;
 
-	std::cout << "Please, enter size of array: ";
-	std::cin >> this->size;
-	this->setSize(this->size);
-	std::cout << std::endl;
+    std::cout << "Please, enter size of array: ";
+    std::cin >> this->size;
+    this->setSize(this->size);
+    std::cout << std::endl;
 
-	for (int i = 0; i < this->getSize(); i++)
-	{
-		std::cout << "Enter " << i << " element of array: ";
-		std::cin >> this->arrPtr[i];
-		std::cout << std::endl;
-	}
+    for (int i = 0; i < this->getSize(); i++)
+    {
+        std::cout << "Enter " << i << " element of array: ";
+        std::cin >> this->arrPtr[i];
+        std::cout << std::endl;
+    }
 
-	std::cout << std::endl;
+    std::cout << std::endl;
 }
 ;
 
 template<class T>
 inline void MyVector<T>::output()
 {
-	std::cout << std::endl;
+    std::cout << std::endl;
 
-	for (int i = 0; i < this->size; i++)
-	{
-		std::cout << this->arrPtr[i] << " ";
-	}
+    for (int i = 0; i < this->size; i++)
+    {
+        std::cout << this->arrPtr[i] << " ";
+    }
 
-	std::cout << std::endl;
+    std::cout << std::endl;
 }
 ;
 //End of definition code.
