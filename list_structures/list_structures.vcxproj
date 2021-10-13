@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="marsh_yard.cpp" />
+    <ClCompile Include="shunt_yard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="my_list.h" />

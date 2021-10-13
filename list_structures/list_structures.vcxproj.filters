@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="marsh_yard.cpp">
+    <ClCompile Include="shunt_yard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
