@@ -15,7 +15,6 @@ int main(int argc, char* argv[])
 
 	vector.output();
 
-	RunPtrSize run = {vector.getArrPtr(), 1000 };
 	timsort(vector);
 
 	vector.output();

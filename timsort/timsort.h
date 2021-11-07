@@ -16,7 +16,7 @@ void galloping(int* begArr, const int& begSize, int* nextArr, const int& nextSiz
 inline int binSearch(int*& arr, int beg, int end, int& el);
 inline int getMinrun(int n);
 inline void reverse(RunPtrSize& run);
-void searchRun(int*& arrPtr, int& pivit, RunPtrSize& run, const int& minRun);
+void searchRun(RunPtrSize& arr, int& pivit, RunPtrSize& run, int minRun);
 void timsort(MyVector<int>& vector);
 
 
@@ -69,20 +69,22 @@ inline void reverse(RunPtrSize& run)
 	}
 }
 
-void searchRun(int*& arrPtr, int& pivit, RunPtrSize& run, const int& minRun)
+void searchRun(RunPtrSize& arr, int& pivit, RunPtrSize& run, int minRun)
 {
-	int* arrPtrPivit = arrPtr + pivit;
+	if (arr.size - pivit < minRun) { minRun = arr.size - pivit; }
+	int* arrPtrPivit = arr.runPtr + pivit;
+	run.runPtr = arrPtrPivit;
 	int p = 1;
 	int size = 2;
 
 	if (arrPtrPivit[0] > arrPtrPivit[1])
 	{
-		while (arrPtrPivit[p] >= arrPtrPivit[p + 1]) { p++; }
+		while ((arrPtrPivit[p] >= arrPtrPivit[p + 1]) && ((pivit + p) < (arr.size - 1))) { p++; }
 		RunPtrSize runRev = { arrPtrPivit, p + 1 };
 		reverse(runRev);
 	}
 
-	while (p < (minRun - 1))
+	while ((p < (minRun - 1)) && ((pivit + p) < (arr.size - 1)))
 	{
 		if (arrPtrPivit[p + 1] >= arrPtrPivit[p])
 			p++;
@@ -94,7 +96,7 @@ void searchRun(int*& arrPtr, int& pivit, RunPtrSize& run, const int& minRun)
 		}
 	}
 
-	while (arrPtrPivit[p + 1] >= arrPtrPivit[p])
+	while ((arrPtrPivit[p + 1] >= arrPtrPivit[p]) && ((pivit + p) < (arr.size - 1)))
 		p++;
 
 	run.size = p + 1;
@@ -307,12 +309,13 @@ void timsort(MyVector<int>& vector)
 
 	MyStack<RunPtrSize> stackOfRun;
 
-	int p = 0;								//pivit.
-	RunPtrSize run = { pArr + p, 2 };		//initializing run.
+	int p = 0;										//pivit.
+	RunPtrSize vectorStruct = { pArr, sizeArr };	//struct of vector.
+	RunPtrSize run = { pArr, 2 };					//initializing run.
 
 	while (p < sizeArr)
 	{
-		searchRun(pArr, p, run, minRun);
+		searchRun(vectorStruct, p, run, minRun);
 
 		if (stackOfRun.getSize() < 1)
 			stackOfRun.push(run);
@@ -322,9 +325,9 @@ void timsort(MyVector<int>& vector)
 				stackOfRun.push(run);
 			else
 			{
-				merge(stackOfRun.peek().runPtr, stackOfRun.peek().size, run.runPtr, run.size);
-				RunPtrSize runInStack = stackOfRun.pop(); runInStack.size += run.size;
-				stackOfRun.push(runInStack);
+				RunPtrSize runInStack = stackOfRun.pop();
+				merge(runInStack.runPtr, runInStack.size, run.runPtr, run.size);
+				runInStack.size += run.size; stackOfRun.push(runInStack);
 			}
 		}
 		else
@@ -335,7 +338,7 @@ void timsort(MyVector<int>& vector)
 			{
 				RunPtrSize Z = stackOfRun.pop();  sizeZ = Z.size;
 				RunPtrSize Y = stackOfRun.pop();  sizeY = Y.size;
-				RunPtrSize X = stackOfRun.peek(); sizeX = X.size;
+				RunPtrSize X = stackOfRun.pop();  sizeX = X.size;
 
 				if ((Y.size <= Z.size || (X.size <= (Y.size + Z.size))) && Z.size <= X.size)
 				{
@@ -350,12 +353,14 @@ void timsort(MyVector<int>& vector)
 					Y.size = 0;       sizeY = 0;
 				}
 
+				if (X.size > 0)
+					stackOfRun.push(X);
 				if (Y.size > 0)
 					stackOfRun.push(Y);
 				if (Z.size > 0)
 					stackOfRun.push(Z);
 
-			} while ((sizeY <= sizeZ || (sizeX <= (sizeY + sizeZ))) && stackOfRun.getSize() >= 2);
+			} while ((sizeY <= sizeZ || (sizeX <= (sizeY + sizeZ))) && stackOfRun.getSize() > 2);
 
 			while (stackOfRun.getSize() > 1)
 			{
@@ -365,6 +370,7 @@ void timsort(MyVector<int>& vector)
 				stackOfRun.push(runInStack);
 			}
 		}
+		run.runPtr += p;
 	}
 }
 #endif
