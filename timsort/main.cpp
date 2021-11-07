@@ -15,7 +15,9 @@ int main(int argc, char* argv[])
 
 	vector.output();
 
-	timsort(vector);
+	cout << endl;
+
+	timsortMerge(vector);
 
 	vector.output();
 }

@@ -17,7 +17,8 @@ inline int binSearch(int*& arr, int beg, int end, int& el);
 inline int getMinrun(int n);
 inline void reverse(RunPtrSize& run);
 void searchRun(RunPtrSize& arr, int& pivit, RunPtrSize& run, int minRun);
-void timsort(MyVector<int>& vector);
+void timsortMerge(MyVector<int>& vector);
+void timsortGalloping(MyVector<int>& vector);
 
 
 void insertSort(RunPtrSize& arr)
@@ -169,139 +170,72 @@ void merge(int* begArr, const int& begSize, int* nextArr, const int& nextSize)
 
 void galloping(int* begArr, const int& begSize, int* nextArr, const int& nextSize)
 {
-	if (begSize <= nextSize)
+	int* tmpArr = new int[begSize];
+
+	memmove_s(reinterpret_cast<void*>(tmpArr), sizeof(int) * begSize,
+		reinterpret_cast<void*>(begArr), sizeof(int) * begSize);
+
+	int i = 0, j = 0, count = 0;
+	int conditionTmp = 0, conditionNext = 0;
+
+	while (i < begSize && j < nextSize)
 	{
-		int* tmpArr = new int[begSize];
-
-		memmove_s(reinterpret_cast<void*>(tmpArr), sizeof(tmpArr),
-			reinterpret_cast<void*>(begArr), sizeof(begArr));
-
-		int i = 0, j = 0, count = 0;
-		int conditionTmp = 0, conditionNext = 0;
-		while (i < begSize && j < nextSize)
+		if (tmpArr[i] <= nextArr[j])
 		{
-			if (tmpArr[i] <= nextArr[j])
+			begArr[count] = tmpArr[i];
+			i++; conditionTmp++;
+
+			if (conditionTmp == 7 && tmpArr[i] <= nextArr[j])
 			{
-				begArr[count] = tmpArr[i];
-				i++; conditionTmp++;
-
-				if (conditionTmp == 7 && tmpArr[i] <= nextArr[j])
+				int bin = 2, begin = i;
+				while (tmpArr[i] <= nextArr[j])
 				{
-					int bin = 2, begin = i;
-					while (tmpArr[i] <= nextArr[j])
-					{
-						i += bin; bin *= 2;
-					}
-					int lastPoint = binSearch(tmpArr, i - bin / 2, i, nextArr[j]);
-					i = lastPoint + 1;
-
-					memmove_s(reinterpret_cast<void*>(begArr + count), sizeof(int) * (lastPoint - begin + 1),
-						reinterpret_cast<void*>(tmpArr + begin), sizeof(int) * (lastPoint - begin + 1));
-
-					count += lastPoint - begin + 1;
-					conditionTmp = 0;
+					i += bin; bin *= 2;
 				}
+				int lastPoint = binSearch(tmpArr, i - bin / 2, i, nextArr[j]);
+				i = lastPoint + 1;
+
+				memmove_s(reinterpret_cast<void*>(begArr + count), sizeof(int) * (lastPoint - begin + 1),
+					reinterpret_cast<void*>(tmpArr + begin), sizeof(int) * (lastPoint - begin + 1));
+
+				count += lastPoint - begin + 1;
+				conditionTmp = 0;
 			}
-			else
-			{
-				begArr[count] = nextArr[j];
-				j++; conditionNext++;
-
-				if (conditionNext == 7 && tmpArr[i] >= nextArr[j])
-				{
-					int bin = 2, begin = j;
-					while (tmpArr[i] >= nextArr[j])
-					{
-						j += bin; bin *= 2;
-					}
-					int lastPoint = binSearch(nextArr, j - bin / 2, j, tmpArr[i]);
-					j = lastPoint + 1;
-
-					memmove_s(reinterpret_cast<void*>(begArr + count), sizeof(int) * (lastPoint - begin + 1),
-						reinterpret_cast<void*>(nextArr + begin), sizeof(int) * (lastPoint - begin + 1));
-
-					count += lastPoint - begin + 1;
-					conditionNext = 0;
-				}
-			}
-			count++;
 		}
-
-		if (i != begSize)
+		else
 		{
-			memmove_s(reinterpret_cast<void*>(begArr + count), sizeof(int) * (nextSize + begSize - count),
-				reinterpret_cast<void*>(tmpArr + i), sizeof(int) * (nextSize + begSize - count));
+			begArr[count] = nextArr[j];
+			j++; conditionNext++;
+
+			if (conditionNext == 7 && tmpArr[i] >= nextArr[j])
+			{
+				int bin = 2, begin = j;
+				while (tmpArr[i] >= nextArr[j])
+				{
+					j += bin; bin *= 2;
+				}
+				int lastPoint = binSearch(nextArr, j - bin / 2, j, tmpArr[i]);
+				j = lastPoint + 1;
+
+				memmove_s(reinterpret_cast<void*>(begArr + count), sizeof(int) * (lastPoint - begin + 1),
+					reinterpret_cast<void*>(nextArr + begin), sizeof(int) * (lastPoint - begin + 1));
+
+				count += lastPoint - begin + 1;
+				conditionNext = 0;
+			}
 		}
-		delete[] tmpArr;
+		count++;
 	}
-	else
+
+	if (i < begSize)
 	{
-		int* tmpArr = new int[nextSize];
-
-		memmove_s(reinterpret_cast<void*>(tmpArr), sizeof(tmpArr),
-			reinterpret_cast<void*>(nextArr), sizeof(nextArr));
-
-		int i = nextSize - 1, j = begSize - 1, count = nextSize + begSize - 1;
-		int conditionTmp = 0, conditionNext = 0;
-		while (i > -1 && j > -1)
-		{
-			if (tmpArr[i] >= nextArr[j])
-			{
-				begArr[count] = tmpArr[i];
-				i--; conditionTmp++;
-
-				if (conditionTmp == 7 && tmpArr[i] >= nextArr[j])
-				{
-					int bin = 2, begin = i;
-					while (tmpArr[i] >= nextArr[j])
-					{
-						i -= bin; bin *= 2;
-					}
-					int lastPoint = binSearch(tmpArr, i, i + bin / 2, nextArr[j]);
-					i = lastPoint - 1;
-					count -= begin - lastPoint + 1;
-
-					memmove_s(reinterpret_cast<void*>(begArr + count), sizeof(int) * (begin - lastPoint + 1),
-						reinterpret_cast<void*>(tmpArr + i), sizeof(int) * (begin - lastPoint + 1));
-
-					conditionTmp = 0;
-				}
-			}
-			else
-			{
-				begArr[count] = nextArr[j];
-				j--; conditionNext++;
-
-				if (conditionNext == 7 && tmpArr[i] <= nextArr[j])
-				{
-					int bin = 2, begin = j;
-					while (tmpArr[i] <= nextArr[j])
-					{
-						j -= bin; bin *= 2;
-					}
-					int lastPoint = binSearch(nextArr, j, j + bin / 2, tmpArr[i]);
-					j = lastPoint - 1;
-					count -= begin - lastPoint + 1;
-
-					memmove_s(reinterpret_cast<void*>(begArr + count), sizeof(int) * (begin - lastPoint + 1),
-						reinterpret_cast<void*>(nextArr + j), sizeof(int) * (begin - lastPoint + 1));
-
-					conditionNext = 0;
-				}
-			}
-			count--;
-		}
-
-		if (i != -1)
-		{
-			memmove_s(reinterpret_cast<void*>(begArr), sizeof(int) * (count + 1),
-				reinterpret_cast<void*>(tmpArr), sizeof(int) * (count + 1));
-		}
-		delete[] tmpArr;
+		memmove_s(reinterpret_cast<void*>(begArr), sizeof(int) * (nextSize + begSize - count),
+			reinterpret_cast<void*>(tmpArr), sizeof(int) * (nextSize + begSize - count));
 	}
+	delete[] tmpArr;
 }
 
-void timsort(MyVector<int>& vector)
+void timsortMerge(MyVector<int>& vector)
 {
 	int minRun = getMinrun(vector.getSize());
 	int* pArr = vector.getArrPtr();
@@ -370,7 +304,79 @@ void timsort(MyVector<int>& vector)
 				stackOfRun.push(runInStack);
 			}
 		}
-		run.runPtr += p;
 	}
 }
+
+void timsortGalloping(MyVector<int>& vector)
+{
+	int minRun = getMinrun(vector.getSize());
+	int* pArr = vector.getArrPtr();
+	int sizeArr = vector.getSize();
+
+	MyStack<RunPtrSize> stackOfRun;
+
+	int p = 0;										//pivit.
+	RunPtrSize vectorStruct = { pArr, sizeArr };	//struct of vector.
+	RunPtrSize run = { pArr, 2 };					//initializing run.
+
+	while (p < sizeArr)
+	{
+		searchRun(vectorStruct, p, run, minRun);
+
+		if (stackOfRun.getSize() < 1)
+			stackOfRun.push(run);
+		else if (stackOfRun.getSize() == 1)
+		{
+			if (stackOfRun.peek().size > run.size)
+				stackOfRun.push(run);
+			else
+			{
+				RunPtrSize runInStack = stackOfRun.pop();
+				galloping(runInStack.runPtr, runInStack.size, run.runPtr, run.size);
+				runInStack.size += run.size; stackOfRun.push(runInStack);
+			}
+		}
+		else
+		{
+			stackOfRun.push(run);
+			int sizeX = 0, sizeY = 0, sizeZ = 0;	//for cycle condition
+			do
+			{
+				RunPtrSize Z = stackOfRun.pop();  sizeZ = Z.size;
+				RunPtrSize Y = stackOfRun.pop();  sizeY = Y.size;
+				RunPtrSize X = stackOfRun.pop();  sizeX = X.size;
+
+				if ((Y.size <= Z.size || (X.size <= (Y.size + Z.size))) && Z.size <= X.size)
+				{
+					galloping(Y.runPtr, Y.size, Z.runPtr, Z.size);
+					Y.size += Z.size; sizeY += sizeZ;
+					Z.size = 0;       sizeZ = 0;
+				}
+				if ((Y.size <= Z.size || (X.size <= (Y.size + Z.size))) && Z.size > X.size)
+				{
+					galloping(X.runPtr, X.size, Y.runPtr, Y.size);
+					X.size += Y.size; sizeX += sizeY;
+					Y.size = 0;       sizeY = 0;
+				}
+
+				if (X.size > 0)
+					stackOfRun.push(X);
+				if (Y.size > 0)
+					stackOfRun.push(Y);
+				if (Z.size > 0)
+					stackOfRun.push(Z);
+
+			} while ((sizeY <= sizeZ || (sizeX <= (sizeY + sizeZ))) && stackOfRun.getSize() > 2);
+
+			while (stackOfRun.getSize() > 1)
+			{
+				RunPtrSize runPop = stackOfRun.pop();
+				galloping(stackOfRun.peek().runPtr, stackOfRun.peek().size, runPop.runPtr, runPop.size);
+				RunPtrSize runInStack = stackOfRun.pop(); runInStack.size += runPop.size;
+				stackOfRun.push(runInStack);
+			}
+		}
+	}
+}
+
 #endif
