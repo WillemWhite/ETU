@@ -64,10 +64,9 @@ public:
 //Definition code.
 template <class T>
 inline MyVector<T>::MyVector()
-    : size(1)
+    : size(0)
 {
-    this->arrPtr = new T[size];
-    this->arrPtr[0] = T();
+    this->arrPtr = nullptr;
 }
 ;
 
@@ -118,6 +117,7 @@ inline void MyVector<T>::setSize(int n)
 template<class T>
 inline void MyVector<T>::setArrPtr(T* newNamePtr)
 {
+    delete[] this->arrPtr;
     this->arrPtr = newNamePtr;
 }
 ;

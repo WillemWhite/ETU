@@ -111,7 +111,7 @@ void merge(int* begArr, const int& begSize, int* nextArr, const int& nextSize)
 			reinterpret_cast<void*>(begArr), sizeof(int) * begSize);
 
 		int i = 0, j = 0, count = 0;
-		while (i != begSize && j != nextSize)
+		while (i < begSize && j < nextSize)
 		{
 			if (tmpArr[i] <= nextArr[j])
 			{
@@ -126,13 +126,10 @@ void merge(int* begArr, const int& begSize, int* nextArr, const int& nextSize)
 			count++;
 		}
 
-		if (i != begSize)
+		if (i < begSize)
 		{
-			for (int k = count; k < (nextSize + begSize); k++)
-			{
-				begArr[k] = tmpArr[i];
-				i++;
-			}
+			memmove_s(reinterpret_cast<void*>(begArr), sizeof(int) * (nextSize + begSize - count),
+				reinterpret_cast<void*>(tmpArr), sizeof(int) * (nextSize + begSize - count));
 		}
 		delete[] tmpArr;
 	}
@@ -144,28 +141,25 @@ void merge(int* begArr, const int& begSize, int* nextArr, const int& nextSize)
 			reinterpret_cast<void*>(nextArr), sizeof(int) * nextSize);
 
 		int i = nextSize - 1, j = begSize - 1, count = nextSize + begSize - 1;
-		while (i != -1 && j != -1)
+		while (i > -1 && j > -1)
 		{
-			if (tmpArr[i] >= nextArr[j])
+			if (tmpArr[i] >= begArr[j])
 			{
 				begArr[count] = tmpArr[i];
 				i--;
 			}
 			else
 			{
-				begArr[count] = nextArr[j];
+				begArr[count] = begArr[j];
 				j--;
 			}
 			count--;
 		}
 
-		if (i != -1)
+		if (i > -1)
 		{
-			for (int k = count; k > -1; k--)
-			{
-				begArr[k] = tmpArr[i];
-				i--;
-			}
+			memmove_s(reinterpret_cast<void*>(begArr), sizeof(int) * (count + 1),
+				reinterpret_cast<void*>(tmpArr), sizeof(int) * (count + 1));
 		}
 		delete[] tmpArr;
 	}
@@ -311,7 +305,7 @@ void timsort(MyVector<int>& vector)
 	int* pArr = vector.getArrPtr();
 	int sizeArr = vector.getSize();
 
-	MyStack<RunPtrSize> stackOfArr;
+	MyStack<RunPtrSize> stackOfRun;
 
 	int p = 0;								//pivit.
 	RunPtrSize run = { pArr + p, 2 };		//initializing run.
@@ -320,26 +314,28 @@ void timsort(MyVector<int>& vector)
 	{
 		searchRun(pArr, p, run, minRun);
 
-		if (stackOfArr.getSize() < 1)
-			stackOfArr.push(run);
-		else if (stackOfArr.getSize() == 1)
+		if (stackOfRun.getSize() < 1)
+			stackOfRun.push(run);
+		else if (stackOfRun.getSize() == 1)
 		{
-			if (stackOfArr.peek().size > run.size)
-				stackOfArr.push(run);
+			if (stackOfRun.peek().size > run.size)
+				stackOfRun.push(run);
 			else
 			{
-				merge(stackOfArr.peek().runPtr, stackOfArr.peek().size, run.runPtr, run.size);
-				stackOfArr.peek() = { stackOfArr.peek().runPtr, stackOfArr.peek().size + run.size };
+				merge(stackOfRun.peek().runPtr, stackOfRun.peek().size, run.runPtr, run.size);
+				RunPtrSize runInStack = stackOfRun.pop(); runInStack.size += run.size;
+				stackOfRun.push(runInStack);
 			}
 		}
 		else
 		{
+			stackOfRun.push(run);
 			int sizeX = 0, sizeY = 0, sizeZ = 0;	//for cycle condition
 			do
 			{
-				RunPtrSize Y = stackOfArr.pop();  sizeY = Y.size;
-				RunPtrSize X = stackOfArr.peek(); sizeX = X.size;
-				RunPtrSize Z = run;				  sizeZ = Z.size;
+				RunPtrSize Z = stackOfRun.pop();  sizeZ = Z.size;
+				RunPtrSize Y = stackOfRun.pop();  sizeY = Y.size;
+				RunPtrSize X = stackOfRun.peek(); sizeX = X.size;
 
 				if ((Y.size <= Z.size || (X.size <= (Y.size + Z.size))) && Z.size <= X.size)
 				{
@@ -355,20 +351,20 @@ void timsort(MyVector<int>& vector)
 				}
 
 				if (Y.size > 0)
-					stackOfArr.push(Y);
+					stackOfRun.push(Y);
 				if (Z.size > 0)
-					stackOfArr.push(Z);
+					stackOfRun.push(Z);
 
-			} while ((sizeY <= sizeZ || (sizeX <= (sizeY + sizeZ))) && stackOfArr.getSize() >= 2);
-		}
+			} while ((sizeY <= sizeZ || (sizeX <= (sizeY + sizeZ))) && stackOfRun.getSize() >= 2);
 
-		while (stackOfArr.getSize() > 1)
-		{
-			RunPtrSize runPop = stackOfArr.pop();
-			merge(stackOfArr.peek().runPtr, stackOfArr.peek().size, runPop.runPtr, runPop.size);
-			stackOfArr.peek() = { stackOfArr.peek().runPtr, stackOfArr.peek().size + runPop.size };
+			while (stackOfRun.getSize() > 1)
+			{
+				RunPtrSize runPop = stackOfRun.pop();
+				merge(stackOfRun.peek().runPtr, stackOfRun.peek().size, runPop.runPtr, runPop.size);
+				RunPtrSize runInStack = stackOfRun.pop(); runInStack.size += runPop.size;
+				stackOfRun.push(runInStack);
+			}
 		}
 	}
-
 }
 #endif

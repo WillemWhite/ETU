@@ -56,7 +56,7 @@ public:
 template<class T>
 inline MyStack<T>::MyStack()
 {
-    this->stackArray.setSize(1);
+    this->stackArray;
     this->size = 0;
 }
 ;
