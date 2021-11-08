@@ -188,9 +188,8 @@ inline void MyVector<T>::output()
     for (int i = 0; i < this->size; i++)
     {
         std::cout << this->arrPtr[i] << " ";
-        if ((i + 1) % 50 == 0) { std::cout << std::endl; }
+        if ((i + 1) % 30 == 0) { std::cout << std::endl; }
     }
-
 }
 ;
 //End of definition code.

@@ -48,16 +48,14 @@ inline int getMinrun(int n)
 
 inline int binSearch(int*& arr, int beg, int end, int& el)
 {
-    int pos = beg + (end - beg + 1) / 2;
+    int pos = beg + (end - beg) / 2;
     while ((arr[pos] > el) || (arr[pos + 1] <= el))
     {
         if (arr[pos] > el)
             end = pos;
         else if (arr[pos + 1] <= el)
             beg = pos;
-        pos = beg + (end - beg + 1) / 2;
-
-        if (end == pos) { return pos - 1; }
+        pos = beg + (end - beg) / 2;
     }
     return pos;
 }
@@ -190,14 +188,19 @@ void galloping(int* begArr, const int& begSize, int* nextArr, const int& nextSiz
                 int bin = 2, begin = i;
                 while ((i < begSize) && (tmpArr[i] <= nextArr[j])) { i += bin; bin *= 2; }
 
-                if (i >= begSize)
+                //end processing.
+                int lastPoint = 0; 
+                if ((i >= begSize) && (tmpArr[begSize - 1] <= nextArr[j]))
                 {
                     memmove_s(reinterpret_cast<void*>(begArr + count), sizeof(int) * (begSize - begin),
                         reinterpret_cast<void*>(tmpArr + begin), sizeof(int) * (begSize - begin));
                     i = begSize; continue;
                 }
+                else if((i >= begSize) && (tmpArr[begSize - 1] > nextArr[j]))
+                    lastPoint = binSearch(tmpArr, i - bin / 2, begSize - 1, nextArr[j]);
+                else
+                    lastPoint = binSearch(tmpArr, i - bin / 2, i, nextArr[j]);
 
-                int lastPoint = binSearch(tmpArr, i - bin / 2, i, nextArr[j]);
                 i = lastPoint + 1;
 
                 memmove_s(reinterpret_cast<void*>(begArr + count), sizeof(int) * (lastPoint - begin + 1),
@@ -219,14 +222,19 @@ void galloping(int* begArr, const int& begSize, int* nextArr, const int& nextSiz
                 int bin = 2, begin = j;
                 while ((j < nextSize) && (tmpArr[i] >= nextArr[j])) { j += bin; bin *= 2; }
 
-                if (j >= nextSize)
+                //end processing.
+                int lastPoint = 0;
+                if ((j >= nextSize) && (tmpArr[i] >= nextArr[nextSize - 1]))
                 {
                     memmove_s(reinterpret_cast<void*>(begArr + count), sizeof(int) * (nextSize - begin),
                         reinterpret_cast<void*>(nextArr + begin), sizeof(int) * (nextSize - begin));
                     j = nextSize; continue;
                 }
+                else if((j >= nextSize) && (tmpArr[i] < nextArr[nextSize - 1]))
+                    lastPoint = binSearch(nextArr, j - bin / 2, nextSize - 1, tmpArr[i]);
+                else
+                    lastPoint = binSearch(nextArr, j - bin / 2, j, tmpArr[i]);
 
-                int lastPoint = binSearch(nextArr, j - bin / 2, j, tmpArr[i]);
                 j = lastPoint + 1;
 
                 memmove_s(reinterpret_cast<void*>(begArr + count), sizeof(int) * (lastPoint - begin + 1),
