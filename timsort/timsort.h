@@ -131,8 +131,8 @@ void merge(int* begArr, const int& begSize, int* nextArr, const int& nextSize)
 
 		if (i < begSize)
 		{
-			memmove_s(reinterpret_cast<void*>(begArr), sizeof(int) * (nextSize + begSize - count),
-				reinterpret_cast<void*>(tmpArr), sizeof(int) * (nextSize + begSize - count));
+			memmove_s(reinterpret_cast<void*>(begArr + count), sizeof(int) * (nextSize + begSize - count),
+				reinterpret_cast<void*>(tmpArr + i), sizeof(int) * (begSize - i));
 		}
 		delete[] tmpArr;
 	}
@@ -161,8 +161,8 @@ void merge(int* begArr, const int& begSize, int* nextArr, const int& nextSize)
 
 		if (i > -1)
 		{
-			memmove_s(reinterpret_cast<void*>(begArr), sizeof(int) * (count + 1),
-				reinterpret_cast<void*>(tmpArr), sizeof(int) * (count + 1));
+			memmove_s(reinterpret_cast<void*>(begArr), sizeof(int) * (i + 1),
+				reinterpret_cast<void*>(tmpArr), sizeof(int) * (i + 1));
 		}
 		delete[] tmpArr;
 	}
