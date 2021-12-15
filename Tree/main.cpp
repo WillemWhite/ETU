@@ -36,5 +36,9 @@ int main(int argc, char* argv[])
     BFS(ptrTree);
     cout << endl;
 
+    system("Pause");
+
+    printf("smth\n");
+
     return 0;
 }

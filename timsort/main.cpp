@@ -6,18 +6,18 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-	srand(time(NULL));
+    srand(time(NULL));
 
-	MyVector<int> vector(10000);
+    MyVector<int> vector(1000000);
 
-	for (int i = 0; i < 10000; i++)
-		vector.getArrPtr()[i] = rand() % 100;
+    for (int i = 0; i < 1000000; i++)
+        vector.getArrPtr()[i] = rand() % 100;
 
-	vector.output();
+    vector.output();
 
-	cout << endl;
+    cout << endl;
 
-	timsortGalloping(vector);
+    timsortGalloping(vector);
 
-	vector.output();
+    vector.output();
 }
