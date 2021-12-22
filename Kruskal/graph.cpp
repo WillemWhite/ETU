@@ -169,7 +169,7 @@ void Graph::MSToutput() {
             Edge edge = this->arrOfEdges.getArrPtr()[j];
 
             int i = j - 1;
-            while (i >= 0 && this->arrOfEdges.getArrPtr()[i].vertex2 > edge.vertex2)
+            while (i >= begin && this->arrOfEdges.getArrPtr()[i].vertex2 > edge.vertex2)
                 this->arrOfEdges.getArrPtr()[i + 1] = this->arrOfEdges.getArrPtr()[i--];
 
             this->arrOfEdges.getArrPtr()[i + 1] = edge;
