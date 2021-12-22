@@ -38,6 +38,7 @@ Node* remove(Node*&, const int&);
 void infixTraverse(Node*&);
 void postfixTraverse(Node*&);
 void prefixTraverse(Node*&);
+void BFS(Node*&);
 // end of description code.
 
 

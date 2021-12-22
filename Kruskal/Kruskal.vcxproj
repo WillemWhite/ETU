@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{d7b76e39-28aa-40c4-bed1-a46d776ca4f4}</ProjectGuid>
-    <RootNamespace>liststructures</RootNamespace>
+    <ProjectGuid>{026db1a9-6145-4646-8801-0af9520f2029}</ProjectGuid>
+    <RootNamespace>Kruskal</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,12 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="shunt_yard.cpp" />
+    <ClCompile Include="graph.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="my_list.h" />
-    <ClInclude Include="my_stack.h" />
-    <ClInclude Include="my_vector.h" />
+    <ClInclude Include="DSU.h" />
+    <ClInclude Include="graph.h" />
+    <ClInclude Include="vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
