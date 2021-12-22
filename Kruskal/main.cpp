@@ -24,5 +24,7 @@ int main(int argc, char* argv[])
 
     cout << endl << "MST Output: " << endl;
     MST.MSToutput();
+
+    system("pause");
     return 0;
 }
