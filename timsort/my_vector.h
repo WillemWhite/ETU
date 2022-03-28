@@ -68,7 +68,6 @@ inline MyVector<T>::MyVector()
 {
     this->arrPtr = nullptr;
 }
-;
 
 template <class T>
 inline MyVector<T>::MyVector(int n)
@@ -78,7 +77,6 @@ inline MyVector<T>::MyVector(int n)
     for (int i = 0; i < n; i++)
         this->arrPtr[i] = T();
 }
-;
 
 template <class T>
 inline MyVector<T>::MyVector(MyVector* other)
@@ -86,7 +84,6 @@ inline MyVector<T>::MyVector(MyVector* other)
 {
     this->arrPtr = other->arrPtr;
 }
-;
 
 template <class T>
 inline MyVector<T>::MyVector(T* arr, int arrSize)
@@ -94,7 +91,6 @@ inline MyVector<T>::MyVector(T* arr, int arrSize)
 {
     this->arrPtr = arr;
 }
-;
 
 template<class T>
 inline void MyVector<T>::setSize(int n)
@@ -112,7 +108,6 @@ inline void MyVector<T>::setSize(int n)
     delete[] arrPtr;
     this->arrPtr = newNamePtr;
 }
-;
 
 template<class T>
 inline void MyVector<T>::setArrPtr(T* newNamePtr)
@@ -120,7 +115,6 @@ inline void MyVector<T>::setArrPtr(T* newNamePtr)
     delete[] this->arrPtr;
     this->arrPtr = newNamePtr;
 }
-;
 
 template<class T>
 void MyVector<T>::add(T element, int point)
@@ -130,7 +124,6 @@ void MyVector<T>::add(T element, int point)
         this->arrPtr[i] = this->arrPtr[i - 1];
     this->arrPtr[point] = element;
 }
-;
 
 template<class T>
 void MyVector<T>::remove(int point)
@@ -139,7 +132,6 @@ void MyVector<T>::remove(int point)
         this->arrPtr[i] = this->arrPtr[i + 1];
     this->setSize(this->size - 1);
 }
-;
 
 template<class T>
 inline int MyVector<T>::search(T element)
@@ -150,14 +142,12 @@ inline int MyVector<T>::search(T element)
             point = i;
     return point;
 }
-;
 
 template<class T>
 inline T MyVector<T>::take(int point)
 {
     return this->arrPtr[point];
 }
-;
 
 template<class T>
 void MyVector<T>::input()
@@ -178,7 +168,6 @@ void MyVector<T>::input()
 
     std::cout << std::endl;
 }
-;
 
 template<class T>
 inline void MyVector<T>::output()
@@ -191,7 +180,6 @@ inline void MyVector<T>::output()
         if ((i + 1) % 30 == 0) { std::cout << std::endl; }
     }
 }
-;
 //End of definition code.
 
 #endif //MY_VECTOR_H
